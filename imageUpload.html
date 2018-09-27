@@ -1,0 +1,168 @@
+<!--
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ * -->
+ <!DOCTYPE HTML>
+ <html>
+ <head>
+     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+     <meta charset="utf-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     
+     <link rel="stylesheet" href="bot.css">
+     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+     <title>Watson Online Store Web UI</title>
+     <script type="text/javascript" src="jquery.min.js"></script>
+     <script type="text/javascript" src="socket.io.min.js"></script>
+     <script type="text/javascript" charset="utf-8">
+
+       $(document).ready(function() {
+            //window.location.href="login.html";
+            var userName = localStorage.getItem("getUserDetails");
+            $(".defUser").text("HI, " + userName);
+            $(".mySlides").on("click",function(){
+            alert(1)
+            })
+            $(".w3-display-left").on("click",function(){
+            plusDivs(-1)
+            })
+            $(".w3-display-right").on("click",function(){
+            plusDivs(1)
+            })
+            var slideIndex = 1;
+            showDivs(slideIndex);
+
+            function plusDivs(n) {
+            showDivs(slideIndex += n);
+            }
+
+            function showDivs(n) {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            if (n > x.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = x.length}
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";  
+            }
+            x[slideIndex-1].style.display = "block";  
+            }
+
+              // Namespace here needs to match the one used in server.py
+              namespace = '/wos';
+              // Connect via Flask SocketIO
+              var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+ 
+              // Display message from the WOS bot
+              socket.on('my_response', function(msg) {
+                  displayMessage(msg.data, 'Bot');
+                  displayImage(msg.image);
+              });
+              
+              // Send message to the WOS bot
+              $('form#emit').on("submit",function(event) {
+ 
+                 socket.emit('my_event', {data: $('#message').val()});
+                  // Display sent from user on the right side
+                  displayMessage($('#message').val(), 'NotWatsonBot');
+                  $("#emit")[0].reset();
+                  return false;
+              });
+
+              $("#message").keyup(function(){
+                    $("#msgSend").prop("disabled",$(this).val().trim()=="");
+              })
+             $(".logout").on("click",function(){
+                    window.location.href="login.html";
+             })
+              $("#uploadFile").change(function() {
+
+                        var formData = new FormData();
+                        formData.append('file', this.files[0]);
+                        $.ajax({
+                            url: 'http://localhost:8003/upload',
+                            type: 'POST',
+                            data: formData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function(data) {
+                            var data = {
+                                Path:data,        				
+                                Token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoicHJhZGVlcCIsImlkIjoxMDEsImV4cGlyZXNieSI6IjIwMjAtMDgtMTkgMDI6NTQ6NTEuNjEyNDAxIn0.Yh63j0gUKx4oPk6hludbTCMTkyHnKTxtrCrAlJ4bgPg"
+                                }
+                        $.ajax({
+                            url:"http://localhost:8003/objectdetection",
+                            type: 'POST',
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function(data) {
+                                $("#message").val(data)
+                            },
+                            error: function() {
+                                alert("error")
+                            }
+                        }, 'json');
+                            },
+                            error: function() {
+                                alert("error")
+                            }
+                        }, 'json');
+                    });
+    });
+     </script>
+ </head>
+ <body>
+        <div data-reactroot="" class="container">
+            <div class="container">
+                <div class="chat-room-container"><div class="chat-room"><div id="side-bar"><div class="current-user"><span class="defUser"><!-- react-text: 19 -->Hi, <!-- /react-text --><!-- react-text: 20 -->BOT<!-- /react-text --></span><div title="Logout" class="logout"><!-- react-text: 22 -->Logout<!-- /react-text --><svg fill="currentColor" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40" style="vertical-align: middle;"><g><path d="m20 8.4l11.1 16.6h-22.2z m-11.6 20h23.2v3.2h-23.2v-3.2z"></path></g></svg></div></div></div><div class="chat-header"></div>
+                <div class="thread-container" >
+                <div class="thread"  id="thread">
+                 <div class="w3-content w3-display-container">
+                  <img class="mySlides" src="https://www.gstatic.com/webp/gallery3/1.png" style="width:30%;height:20%">
+                  <img class="mySlides" src="https://www.gstatic.com/webp/gallery3/2.png" style="width:30%;height:20%">
+                  <img class="mySlides" src="https://www.gstatic.com/webp/gallery3/3.png" style="width:30%;height:20%">
+                  <img class="mySlides" src="https://www.gstatic.com/webp/gallery3/4.png" style="width:30%;height:20%">
+                
+                  <button class="w3-button w3-black w3-display-left" >&#10094;</button>
+                  <button class="w3-button w3-black w3-display-right">&#10095;</button>
+                </div>
+                </div></div><div class="message-input"><div><span></span></div>
+                <form id="emit" class="message-form">
+                    <input type="text" id="message" class="form-control" value="" autocomplete="off" placeholder="Type something interesting">
+                    <button type="submit" class="send" id="msgSend" disabled=""> Send </button>
+                    <span class="fileUpload btn btn-default">
+                            <span class="glyphicon glyphicon-upload"></span> Upload file
+                            <input type="file" id="uploadFile" />
+                        </span>
+                </form>
+                <!-- <form class="upload-form">
+                    <input type="file" class="form-control">
+                    <button class="send">Upload!</button>
+                </form></div> -->
+                <!-- <form class="message-form form-control form-imgUpload" enctype="multipart/form-data">
+                    <span class="fileUpload btn btn-default">
+                        <span class="glyphicon glyphicon-upload"></span> Upload file
+                        <input type="file" id="uploadFile" />
+                    </span>
+                </form> -->
+                </div>
+                </div>
+                
+                </div></div>
+ <!-- Use bot.js to give us a nice chatbot UI. -->
+ <script src="bot.js"></script>
+ </body>
+ </html>
+ 

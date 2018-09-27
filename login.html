@@ -1,0 +1,78 @@
+<!--
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ * -->
+ <!DOCTYPE HTML>
+ <html>
+ <head>
+     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+     <meta charset="utf-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <link href='https://fonts.googleapis.com/css?family=Ubuntu:500' rel='stylesheet' type='text/css'>
+     <link href='login.css' rel='stylesheet' type='text/css'>
+     <title>Watson Online Store Web UI</title>
+     <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<script>
+$(document).ready(function(){
+
+    var name = $("#uName").val("");
+    var pwd =    $("#pwd").val("");
+    
+    $('.error-page').hide(0);
+   
+
+
+
+$('.login-button , .no-access').on("click",function(){
+//     alert()
+//   $('.login').slideUp(500);
+//   $('.error-page').slideDown(1000);
+ name = $("#uName").val();
+ pwd =    $("#pwd").val();
+ var userDetails={
+        name:name,
+        pwd:pwd
+    }
+localStorage.setItem("getUserDetails",userDetails.name)
+window.location.href="imageUpload.html";
+});
+
+$('.try-again').on("click",function(){
+  $('.error-page').hide(0);
+  $('.login').slideDown(1000);
+});
+})
+
+</script>
+ </body>
+ <div class="login">
+        <div class="login-header">
+          <h1>Login</h1>
+        </div>
+        <div class="login-form">
+          <h3>Username:</h3>
+          <input type="text" id="uName" placeholder="Username"/><br>
+          <h3>Password:</h3>
+          <input type="password" id="pwd" placeholder="Password"/>
+          <br>
+          <input type="button" value="Login" class="login-button"/>
+          <br>
+          <a class="sign-up">Sign Up!</a>
+          <br>
+          <h6 class="no-access">Can't access your account?</h6>
+        </div>
+      </div>
+      <div class="error-page">
+        <div class="try-again">Error: Try again?</div>
+      </div>
+ </html>
